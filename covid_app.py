@@ -11,15 +11,10 @@ import matplotlib.pyplot as plt
 from datetime import datetime as dt
 from urllib.request import urlopen
 import json
-import cufflinks as cf
 from warnings import filterwarnings
 filterwarnings('ignore')
 plt.style.use('seaborn')
-from pathlib import Path
-from sklearn.impute import SimpleImputer
-import folium as fl
-import pydeck as pdk
-import altair as alt
+
 
 # Upload Data
 first_csv = pd.read_csv('12-30-2020.csv',sep=",")
@@ -47,9 +42,6 @@ st.markdown('Coronavirus disease (COVID-19) is an infectious disease caused by a
 
 st.sidebar.title("Visualization Selector")
 chart_select= st.sidebar.radio("Analysis Type", (["Country Based"]))
-
-# date_select= st.sidebar.radio("Date", ("Dec_31", "Dec_30"))
-# selected_country= eval(date_select)[eval(date_select)["Country_Region"]== country_select]
 
 if chart_select == "Overview":
     region = []
@@ -105,89 +97,28 @@ if chart_select == "Overview":
     with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
         countries = json.load(response)
 
-
-
 if chart_select == "Country Based":
     
-    DATA_URL = 'covid.csv'
-    df= pd.read_csv("covid.csv")
-    df["acc_total_deaths"]= df["total_deaths"].cumsum(axis=0)
+    df= pd.read_csv("owid-covid-data.csv") #reading the covid.csv file
+    # df["acc_total_deaths"]= df["total_deaths"].cumsum(axis=0) # adds another column for cumulative sum
     country_name_input = st.sidebar.multiselect(
     'Country name',
-    df.groupby('Country').count().reset_index()['Country'].tolist())
-    
-    # by country name
-    
-    
-    
-    chart_type=st.sidebar.selectbox("Graph Type", ["Line Chart", "Animated Graph"])
+    df.groupby('location').count().reset_index()['location'].tolist()) #selecting the name of the country among the countries list
+
+    chart_type=st.sidebar.selectbox("Graph Type", ["Line Chart", "Animated Graph"]) #choosing the chart type
 
     
-    if chart_type == "Line Chart":
-        if len(country_name_input) > 0:
-            subset_data= df[df['Country'].isin(country_name_input)]
-            subset_data["date"]= subset_data["date"].map(lambda x: dt.strptime(str(x), "%d/%m/%Y"))
-            subset_data= subset_data.sort_values(by="date")
+    if len(country_name_input) > 0:
+        subset_data= df[df['location'].isin(country_name_input)] #getting the stats of the selected country/ies
+        subset_data= subset_data.sort_values(by="date") #sorting values based on the date
 
-            ## linechart (ALTAIR CHARTS)
-            st.subheader('Comparision of infection growth')
-            total_cases_graph= px.line (x= subset_data["date"],
-                                y= subset_data["acc_total_deaths"], 
-                                width=1000,
-                                color=subset_data["Country"],
-                                )
-            st.plotly_chart(total_cases_graph)
-    if chart_type =="Animated Graph":
-        ## ANIMATED MAP
-
-        # Variable for date picker, default to Jan 1st 2020
-        date = dt.date(2020,1,1)
-        # Set viewport for the deckgl map
-        view = pdk.ViewState(latitude=0, longitude=0, zoom=0.2,)
-        # Create the scatter plot layer
-        covidLayer = pdk.Layer(
-                "ScatterplotLayer",
-                data=df,
-                pickable=False,
-                opacity=0.3,
-                stroked=True,
-                filled=True,
-                radius_scale=10,
-                radius_min_pixels=5,
-                radius_max_pixels=60,
-                line_width_min_pixels=1,
-                get_position=["Longitude", "Latitude"],
-                get_radius=metric_to_show_in_covid_Layer,
-                get_fill_color=[252, 136, 3],
-                get_line_color=[255,0,0],
-                tooltip="test test",
-            )
-
-        # Create the deck.gl map
-        r = pdk.Deck(
-            layers=[covidLayer],
-            initial_view_state=view,
-            map_style="mapbox://styles/mapbox/light-v10",
-        )
-        # Create a subheading to display current date
-        subheading = st.subheader("")
-        # Render the deck.gl map in the Streamlit app as a Pydeck chart 
-        map = st.pydeck_chart(r)
-        # Update the maps and the subheading each day for 90 days
-        for i in range(0, 120, 1):
-            # Increment day by 1
-            date += dt.timedelta(days=1)
-            # Update data in map layers
-            covidLayer.data = df[df['date'] == date.isoformat()]
-            # Update the deck.gl map
-            r.update()
-            # Render the map
-            map.pydeck_chart(r)
-            # Update the heading with current date
-            subheading.subheader("%s on : %s" % (metric_to_show_in_covid_Layer, date.strftime("%B %d, %Y")))
-            
-        # wait 0.1 second before go onto next day
-            time.sleep(0.05)
+        st.subheader('Comparision of infection growth')
+        total_cases_graph= px.line (x= subset_data["date"],
+                            y= subset_data["total_deaths"], 
+                            width=1000,
+                            color=subset_data["location"],
+                            ) # plotly graph
+        st.plotly_chart(total_cases_graph) #showing plotly graph
 
 if chart_select == "USA":
     def convert_date(date_str):
