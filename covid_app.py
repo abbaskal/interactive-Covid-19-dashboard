@@ -1,3 +1,4 @@
+from logging import PlaceHolder
 import streamlit as st
 import numpy as np
 import pandas as pd
@@ -16,32 +17,12 @@ filterwarnings('ignore')
 plt.style.use('seaborn')
 
 
-# Upload Data
-first_csv = pd.read_csv('12-30-2020.csv',sep=",")
-second_csv = pd.read_csv('time_series_covid19_deaths_global.csv',sep=",")
-third_csv = pd.read_csv('CONVENIENT_global_confirmed_cases.csv',sep=",")
-raw_conf = pd.read_csv('RAW_global_confirmed_cases.csv')
-raw_deaths = pd.read_csv('RAW_global_deaths.csv')
-
-
-
-confirmed = raw_conf.groupby('Country/Region')[list(raw_conf.columns)[4:]].agg('sum')
-death = raw_deaths.groupby('Country/Region')[list(raw_conf.columns)[4:]].agg('sum')
-
-
-third_csv = third_csv[1:]
-third_csv = third_csv.rename(columns={"Country/Region": "Date"}) 
-
-
-
-
-
 st.title("Covid-19 Dashboard")
 st.markdown('The dashboard will visualize the Covid-19 Situation in All Countries')
 st.markdown('Coronavirus disease (COVID-19) is an infectious disease caused by a newly discovered coronavirus. Most people infected with the COVID-19 virus will experience mild to moderate respiratory illness and recover without requiring special treatment.')
 
 st.sidebar.title("Visualization Selector")
-chart_select= st.sidebar.radio("Analysis Type", (["Country Based"]))
+chart_select= st.sidebar.radio("Analysis Type", (["Country Based", "Overview"]))
 
 if chart_select == "Overview":
     region = []
@@ -105,20 +86,31 @@ if chart_select == "Country Based":
     'Country name',
     df.groupby('location').count().reset_index()['location'].tolist()) #selecting the name of the country among the countries list
 
-    chart_type=st.sidebar.selectbox("Graph Type", ["Line Chart", "Animated Graph"]) #choosing the chart type
-
+    # chart_type=st.sidebar.selectbox("Graph Type", ["Line Chart", "Animated Graph"]) #choosing the chart type
+    start_date= st.sidebar.date_input("Choose the start data", value= dt.strptime("2020-02-24", "%Y-%m-%d") , min_value=dt.strptime("2020-02-24", "%Y-%m-%d"), max_value=dt.strptime("2021-06-08", "%Y-%m-%d"))
+    end_date= st.sidebar.date_input("Choose the start data", value= dt.strptime("2021-06-08", "%Y-%m-%d") , min_value=start_date, max_value=dt.strptime("2021-06-08", "%Y-%m-%d"))
     
     if len(country_name_input) > 0:
         subset_data= df[df['location'].isin(country_name_input)] #getting the stats of the selected country/ies
         subset_data= subset_data.sort_values(by="date") #sorting values based on the date
-
-        st.subheader('Comparision of infection growth')
+        subset_data= subset_data[(subset_data["date"] > str(start_date)) & (subset_data["date"] < str(end_date))]
+        
+        st.subheader('Comparision of the total deaths caused by COVID-19')
         total_cases_graph= px.line (x= subset_data["date"],
                             y= subset_data["total_deaths"], 
                             width=1000,
                             color=subset_data["location"],
                             ) # plotly graph
         st.plotly_chart(total_cases_graph) #showing plotly graph
+
+        st.subheader('Comparision of the total deaths per million caused by COVID-19')
+        total_cases_graph= px.line (x= subset_data["date"],
+                            y= subset_data["total_deaths_per_million"], 
+                            width=1000,
+                            color=subset_data["location"],
+                            ) # plotly graph
+        st.plotly_chart(total_cases_graph) #showing plotly graph
+
 
 if chart_select == "USA":
     def convert_date(date_str):
