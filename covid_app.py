@@ -19,7 +19,7 @@ st.markdown('The dashboard will visualize the Covid-19 Situation in All Countrie
 st.markdown('Coronavirus disease (COVID-19) is an infectious disease caused by a newly discovered coronavirus. Most people infected with the COVID-19 virus will experience mild to moderate respiratory illness and recover without requiring special treatment.')
 
 st.sidebar.title("Visualization Selector")
-chart_select= st.sidebar.radio("Analysis Type", (["Country Based", "Overview"]))
+chart_select= st.sidebar.radio("Analysis Type", (["Home", "Country Based", "Overview", "USA"]))
 
 if chart_select == "Overview":
     region = []
@@ -77,37 +77,35 @@ if chart_select == "Overview":
 
 if chart_select == "Country Based":
     
-    df= pd.read_csv("owid-covid-data.csv") #reading the covid.csv file
-    # df["acc_total_deaths"]= df["total_deaths"].cumsum(axis=0) # adds another column for cumulative sum
+    df= pd.read_csv("owid-covid-data.csv") #reading the covid.csv file reference ===>   "https://covid.ourworldindata.org/data/owid-covid-data.csv"
     country_name_input = st.sidebar.multiselect(
     'Country name',
     df.groupby('location').count().reset_index()['location'].tolist()) #selecting the name of the country among the countries list
+    
+    start_date= st.sidebar.date_input("Choose the start date", value= dt.strptime("2020-02-24", "%Y-%m-%d") , min_value=dt.strptime("2020-02-24", "%Y-%m-%d"), max_value=dt.strptime("2021-06-08", "%Y-%m-%d")) #choosing the start date
 
-    # chart_type=st.sidebar.selectbox("Graph Type", ["Line Chart", "Animated Graph"]) #choosing the chart type
-    start_date= st.sidebar.date_input("Choose the start data", value= dt.strptime("2020-02-24", "%Y-%m-%d") , min_value=dt.strptime("2020-02-24", "%Y-%m-%d"), max_value=dt.strptime("2021-06-08", "%Y-%m-%d"))
-    end_date= st.sidebar.date_input("Choose the start data", value= dt.strptime("2021-06-08", "%Y-%m-%d") , min_value=start_date, max_value=dt.strptime("2021-06-08", "%Y-%m-%d"))
+    end_date= st.sidebar.date_input("Choose the end date", value= dt.strptime("2021-06-08", "%Y-%m-%d") , min_value=start_date, max_value=dt.strptime("2021-06-08", "%Y-%m-%d")) #choosing the end date
     
     if len(country_name_input) > 0:
         subset_data= df[df['location'].isin(country_name_input)] #getting the stats of the selected country/ies
         subset_data= subset_data.sort_values(by="date") #sorting values based on the date
-        subset_data= subset_data[(subset_data["date"] > str(start_date)) & (subset_data["date"] < str(end_date))]
+        subset_data= subset_data[(subset_data["date"] > str(start_date)) & (subset_data["date"] < str(end_date))] #filtering data based on the selected period
         
         st.subheader('Comparision of the total deaths caused by COVID-19')
-        total_cases_graph= px.line (x= subset_data["date"],
+        total_deaths_graph= px.line (x= subset_data["date"],
                             y= subset_data["total_deaths"], 
                             width=1000,
                             color=subset_data["location"],
                             ) # plotly graph
-        st.plotly_chart(total_cases_graph) #showing plotly graph
+        st.plotly_chart(total_deaths_graph) #showing plotly graph
 
         st.subheader('Comparision of the total deaths per million caused by COVID-19')
-        total_cases_graph= px.line (x= subset_data["date"],
+        total_deaths_per_million_graph= px.line (x= subset_data["date"],
                             y= subset_data["total_deaths_per_million"], 
                             width=1000,
                             color=subset_data["location"],
                             ) # plotly graph
-        st.plotly_chart(total_cases_graph) #showing plotly graph
-
+        st.plotly_chart(total_deaths_per_million_graph) #showing plotly graph
 
 if chart_select == "USA":
     def convert_date(date_str):
