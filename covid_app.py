@@ -13,30 +13,31 @@ from warnings import filterwarnings
 filterwarnings('ignore')
 plt.style.use('seaborn')
 
-## HOMEPAGE
-# setting title
-st.markdown("# Welcome! We are happy that you are using our interactive Covid-19 Dashboard ")
-
-st.markdown("This project is performed by the CRI Digital Science Students at Paris/France.  "
-            "The dashboard will visualize the Covid-19 Situation in All Countries "
-            "Coronavirus disease (COVID-19) is an infectious disease caused by a newly discovered coronavirus. Most people infected with the COVID-19 virus will experience mild to moderate respiratory illness and recover without requiring special treatment."
-            "we would like analyze current situation of Covid on the world. ")
-
-st.markdown("(Our open-source data taken from this link: https://www.kaggle.com/antgoldbloom/covid19-data-from-john-hopkins-university) ")
-st.image('covid.jpg')
-
-dataset = st.beta_container()
-with dataset:
-    st.write("Dataset sample")
-
-    data = pd.read_csv("owid-covid-data.csv")
-    st.write(data.head(10))
-
-
 st.sidebar.image('look.jpg')
 st.sidebar.title("Vizualization Selector")
 st.sidebar.write("Feel free to play graphs!")
-chart_select= st.sidebar.radio("Analysis Type", (["Home", "Country Based", "Overview", "USA"]))
+chart_select= st.sidebar.radio("Navigation Panel", (["Home", "Country Based", "Overview", "USA"]))
+
+
+if chart_select =="Home":
+    ## HOMEPAGE
+    # setting title
+    st.markdown("# Welcome! We are happy that you are using our interactive Covid-19 Dashboard ")
+
+    st.markdown("This project is performed by the CRI Digital Science Students at Paris/France.  "
+                "The dashboard will visualize the Covid-19 Situation in All Countries "
+                "Coronavirus disease (COVID-19) is an infectious disease caused by a newly discovered coronavirus. Most people infected with the COVID-19 virus will experience mild to moderate respiratory illness and recover without requiring special treatment."
+                "we would like analyze current situation of Covid on the world. ")
+
+    st.markdown("(Our open-source data taken from this link: https://www.kaggle.com/antgoldbloom/covid19-data-from-john-hopkins-university) ")
+    st.image('covid.jpg')
+
+    dataset = st.beta_container()
+    with dataset:
+        st.write("Dataset sample")
+
+        data = pd.read_csv("owid-covid-data.csv")
+        st.write(data.head(10))
 
 if chart_select == "Overview":
     region = []
@@ -94,14 +95,16 @@ if chart_select == "Overview":
 
 if chart_select == "Country Based":
     
+    st.markdown("# Please choose the countries from the selector below")
+    st.markdown(" You can also select the period which you wish to see the data in")
     df= pd.read_csv("owid-covid-data.csv") #reading the owid-covid-data.csv file reference ===>   "https://covid.ourworldindata.org/data/owid-covid-data.csv"
-    country_name_input = st.sidebar.multiselect(
+    country_name_input = st.multiselect(
     'Country name',
     df.groupby('location').count().reset_index()['location'].tolist()) #selecting the name of the country among the countries list
     
-    start_date= st.sidebar.date_input("Choose the start date", value= dt.strptime("2020-02-24", "%Y-%m-%d") , min_value=dt.strptime("2020-02-24", "%Y-%m-%d"), max_value=dt.strptime("2021-06-08", "%Y-%m-%d")) #choosing the start date
+    start_date= st.date_input("Choose the start date", value= dt.strptime("2020-02-24", "%Y-%m-%d") , min_value=dt.strptime("2020-02-24", "%Y-%m-%d"), max_value=dt.strptime("2021-06-08", "%Y-%m-%d")) #choosing the start date
 
-    end_date= st.sidebar.date_input("Choose the end date", value= dt.strptime("2021-06-08", "%Y-%m-%d") , min_value=start_date, max_value=dt.strptime("2021-06-08", "%Y-%m-%d")) #choosing the end date
+    end_date= st.date_input("Choose the end date", value= dt.strptime("2021-06-08", "%Y-%m-%d") , min_value=start_date, max_value=dt.strptime("2021-06-08", "%Y-%m-%d")) #choosing the end date
     
     if len(country_name_input) > 0:
         subset_data= df[df['location'].isin(country_name_input)] #getting the stats of the selected country/ies
