@@ -13,12 +13,29 @@ from warnings import filterwarnings
 filterwarnings('ignore')
 plt.style.use('seaborn')
 
+## HOMEPAGE
+# setting title
+st.markdown("# Welcome! We are happy that you are using our interactive Covid-19 Dashboard ")
 
-st.title("Covid-19 Dashboard")
-st.markdown('The dashboard will visualize the Covid-19 Situation in All Countries')
-st.markdown('Coronavirus disease (COVID-19) is an infectious disease caused by a newly discovered coronavirus. Most people infected with the COVID-19 virus will experience mild to moderate respiratory illness and recover without requiring special treatment.')
+st.markdown("This project is performed by the CRI Digital Science Students at Paris/France.  "
+            "The dashboard will visualize the Covid-19 Situation in All Countries "
+            "Coronavirus disease (COVID-19) is an infectious disease caused by a newly discovered coronavirus. Most people infected with the COVID-19 virus will experience mild to moderate respiratory illness and recover without requiring special treatment."
+            "we would like analyze current situation of Covid on the world. ")
 
-st.sidebar.title("Visualization Selector")
+st.markdown("(Our open-source data taken from this link: https://www.kaggle.com/antgoldbloom/covid19-data-from-john-hopkins-university) ")
+st.image('covid.jpg')
+
+dataset = st.beta_container()
+with dataset:
+    st.write("Dataset sample")
+
+    data = pd.read_csv("owid-covid-data.csv")
+    st.write(data.head(10))
+
+
+st.sidebar.image('look.jpg')
+st.sidebar.title("Vizualization Selector")
+st.sidebar.write("Feel free to play graphs!")
 chart_select= st.sidebar.radio("Analysis Type", (["Home", "Country Based", "Overview", "USA"]))
 
 if chart_select == "Overview":
