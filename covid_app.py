@@ -77,7 +77,7 @@ if chart_select == "Overview":
 
 if chart_select == "Country Based":
     
-    df= pd.read_csv("owid-covid-data.csv") #reading the covid.csv file reference ===>   "https://covid.ourworldindata.org/data/owid-covid-data.csv"
+    df= pd.read_csv("owid-covid-data.csv") #reading the owid-covid-data.csv file reference ===>   "https://covid.ourworldindata.org/data/owid-covid-data.csv"
     country_name_input = st.sidebar.multiselect(
     'Country name',
     df.groupby('location').count().reset_index()['location'].tolist()) #selecting the name of the country among the countries list
