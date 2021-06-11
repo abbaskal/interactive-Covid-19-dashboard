@@ -51,7 +51,7 @@ if chart_select == "Home":
 
         data = pd.read_csv("owid-covid-data.csv")
         st.write(data.head(10))
-    st.markdown("This is a snippet of the covid data over a range of locations, to attempt to reduce redundancy, irrelevant variables have been eliminated")
+    st.markdown("This is a snippet of the covid data over a range of locations, in an attempt to reduce redundancy, irrelevant variables have been eliminated")
 
 if chart_select == "Country Based":
 
