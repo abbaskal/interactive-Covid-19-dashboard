@@ -141,7 +141,7 @@ if chart_select == "Country Based":
                                 ) # plotly graph
             total_per_million_graph.update_layout(title=f'Comparision of the total {variable} caused by COVID-19',
                                        xaxis=dict(title='Date'),
-                                       yaxis=dict(title=f'total {variable}'),
+                                       yaxis=dict(title=f'total {variable} per million'),
                                        legend_title=dict(text='<b>Countries</b>')
                                        )
             st.plotly_chart(total_per_million_graph)
