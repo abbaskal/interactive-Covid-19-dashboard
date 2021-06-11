@@ -3,5 +3,7 @@
         "activityBar.background": "#451E46",
         "titleBar.activeBackground": "#612A62",
         "titleBar.activeForeground": "#FCF9FC"
-    }
+    },
+    "git.ignoreLimitWarning": true,
+    "python.pythonPath": "C:\\Users\\miss_\\AppData\\Local\\Programs\\Python\\Python39"
 }

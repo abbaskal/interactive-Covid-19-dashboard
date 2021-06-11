@@ -202,5 +202,5 @@ if chart_select == "USA":
                                width=1000
                                )
 
-    fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+    fig.update_layout(margin={"r": 1, "t": 0, "l": 0, "b": 0})
     st.plotly_chart(fig)
