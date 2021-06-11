@@ -11,7 +11,7 @@ from urllib.request import urlopen
 import json
 from warnings import filterwarnings
 
-st.set_page_config(page_title= 'Covid Dashboards', page_icon="download.png" )
+st.set_page_config(layout="wide", page_title= 'Covid Dashboards', page_icon="download.png" )
 
 filterwarnings('ignore')
 plt.style.use('seaborn')
@@ -23,7 +23,7 @@ chart_select = st.sidebar.radio("Navigation Panel", (["Home", "Country Based", "
 
 if chart_select == "Home":
     ## HOMEPAGE
-    padding = -10
+    padding = 10
     st.markdown(f""" <style>
         .reportview-container .main .block-container{{
             padding-top: {padding}rem;
@@ -47,7 +47,7 @@ if chart_select == "Home":
 
     dataset = st.beta_container()
     with dataset:
-        st.write("Dataset sample")
+        st.write("Dataset Sample")
 
         data = pd.read_csv("owid-covid-data.csv")
         st.write(data.head(10))
@@ -126,25 +126,11 @@ if chart_select == "Country Based":
 
     if len(country_name_input) > 0:
 
-        subset_data = df[df['location'].isin(country_name_input)]  # getting the stats of the selected country/ies
-        subset_data = subset_data.sort_values(by="date")  # sorting values based on the date
-        subset_data = subset_data[(subset_data["date"] > str(start_date)) & (
-                    subset_data["date"] < str(end_date))]  # filtering data based on the selected period
-
-        st.subheader('Comparision of the total deaths caused by COVID-19')
-        total_deaths_graph = px.line(df, x='Date',
-                                     y='Total_Deaths',
-                                     width=1000,
-                                     color='Countries')  # plotly graph
-
-
-        st.plotly_chart(total_deaths_graph)  # showing plotly graph
-
-
         subset_data= df[df['location'].isin(country_name_input)] #getting the stats of the selected country/ies
         subset_data= subset_data.sort_values(by="date") #sorting values based on the date
         subset_data= subset_data[(subset_data["date"] > str(start_date)) & (subset_data["date"] < str(end_date))] #filtering data based on the selected period
         variable= st.selectbox("cases | deaths", ["cases", "deaths"])
+
         def draw_plots(variable):
             st.subheader(f'Comparision of the total {variable} caused by COVID-19')
             total_graph= px.line (x= subset_data["date"],
@@ -172,9 +158,7 @@ if chart_select == "Country Based":
                                        )
             st.plotly_chart(total_per_million_graph)
 
-        draw_plots(variable=variable)
-         #showing plotly graph
-
+        draw_plots(variable=variable) #showing plotly graph
 
 if chart_select == "USA":
     def convert_date(date_str):
