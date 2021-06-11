@@ -1,4 +1,13 @@
 import streamlit as st
+padding = -10
+st.markdown(f""" <style>
+    .reportview-container .main .block-container{{
+        padding-top: {padding}rem;
+        padding-right: {padding}rem;
+        padding-left: {padding}rem;
+        padding-bottom: {padding}rem;
+    }} </style> """, unsafe_allow_html=True)
+
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -14,7 +23,7 @@ from warnings import filterwarnings
 filterwarnings('ignore')
 plt.style.use('seaborn')
 
-
+st.set_page_config(page_title= 'Covid Dashboard', page_icon="download.png" )
 
 st.sidebar.image('look.jpg')
 st.sidebar.title("Visualization Selector")
@@ -22,14 +31,7 @@ st.sidebar.write("Feel free to play graphs!")
 chart_select = st.sidebar.radio("Navigation Panel", (["Home", "Country Based", "Overview", "USA"]))
 
 if chart_select == "Home":
-    padding = 30
-    st.markdown(f""" <style>
-        .reportview-container .main .block-container{{
-            padding-top: {padding}rem;
-            padding-right: {padding}rem;
-            padding-left: {padding}rem;
-            padding-bottom: {padding}rem;
-        }} </style> """, unsafe_allow_html=True)
+
     ## HOMEPAGE
     # setting title
     st.markdown("# Welcome! We are happy that you are using our interactive Covid-19 Dashboard ")
@@ -47,12 +49,10 @@ if chart_select == "Home":
 
     dataset = st.beta_container()
     with dataset:
-        st.write("Dataset Sample")
+        st.write("Dataset sample")
 
         data = pd.read_csv("owid-covid-data.csv")
         st.write(data.head(10))
-
-        st.markdown("This is a snippet of the covid data over a range of locations, to attempt to reduce redundancy, irrelevant variables have been eliminated")
 
 if chart_select == "Overview":
     region = []
