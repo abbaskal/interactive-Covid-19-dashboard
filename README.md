@@ -31,10 +31,45 @@ The covid dataset has the following fields:
 **Cases: The number of daily cases (corresponding to the case type)**
 
 ## Dependencies
+**All the requirements needed for this projects is stored in the [requirement.txt](https://github.com/Abbas-Kalantari/interactive-Covid-19-dashboard/blob/master/requirements.txt) file.**
 
+*to run it on your local computer follow the guideline below:*
+
+#### 1. cloning the repo
+
+```bash
+# clone the repository
+
+git clone https://github.com/Abbas-Kalantari/interactive-Covid-19-dashboard
+
+```
+#### 2. go to the folder
+
+```bash
+# clone the repository
+
+cd interactive-Covid-19-dashboard
+
+```
+#### 3. cloning the repo
+
+```bash
+# clone the repository
+
+pip install requirements.txt
+
+```
+#### 4. cloning the repo
+
+```bash
+# clone the repository
+
+streamlit run covid_app.py
+
+```
 
 ## Dashboard
 
-A supporting dashboard is available here
+A supporting dashboard is available [here](https://thawing-anchorage-53534.herokuapp.com/)
 
 
