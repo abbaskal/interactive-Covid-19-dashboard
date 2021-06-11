@@ -22,13 +22,16 @@ https://thawing-anchorage-53534.herokuapp.com/
 
 The covid dataset has the following fields:
 
-**Date: The date of the summary**
-**Province: The province or state, when applicable**
-**Country: The country or region name**
-**Lat: Latitude point**
-**Long: Longitude point**
-**Type: The type of case (i.e., confirmed, death)**
-**Cases: The number of daily cases (corresponding to the case type)**
+ | Variable  | Definition  |
+ | ---  | ---  |
+ | Date | The date of the summary |  
+ | Province | The province or state, when applicable |
+ | Country | The country or region name |
+ | Lat | Latitude point |
+ | Long | Longitude point |
+ | Type | The type of case (i.e., confirmed, death) |
+ | Cases | The number of daily cases (corresponding to the case type) |
+
 
 ## Dependencies
 **All the requirements needed for this projects is stored in the [requirement.txt](https://github.com/Abbas-Kalantari/interactive-Covid-19-dashboard/blob/master/requirements.txt) file.**
