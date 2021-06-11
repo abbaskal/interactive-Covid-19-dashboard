@@ -1,4 +1,6 @@
 import streamlit as st
+
+
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -11,19 +13,20 @@ from urllib.request import urlopen
 import json
 from warnings import filterwarnings
 
-st.set_page_config(layout="wide", page_title='Covid Dashboards', page_icon="download.png")
-
 filterwarnings('ignore')
 plt.style.use('seaborn')
+
+raw_conf = pd.read_csv("RAW_global_confirmed_cases.csv")
+raw_deaths = pd.read_csv("RAW_global_deaths.csv")
+third_csv = pd.read_csv("CONVENIENT_global_confirmed_cases.csv")
 
 st.sidebar.image('look.jpg')
 st.sidebar.title("Visualization Selector")
 st.sidebar.write("Feel free to play graphs!")
-chart_select = st.sidebar.radio("Navigation Panel", (["Home", "Country Based", "USA"]))
+chart_select = st.sidebar.radio("Navigation Panel", (["Home", "Country Based", "Overview", "USA"]))
 
 if chart_select == "Home":
-    ## HOMEPAGE
-    padding = 10
+    padding = -10
     st.markdown(f""" <style>
         .reportview-container .main .block-container{{
             padding-top: {padding}rem;
@@ -31,6 +34,8 @@ if chart_select == "Home":
             padding-left: {padding}rem;
             padding-bottom: {padding}rem;
         }} </style> """, unsafe_allow_html=True)
+
+    ## HOMEPAGE
     # setting title
     st.markdown("# Welcome! We are happy that you are using our interactive Covid-19 Dashboard ")
 
@@ -44,14 +49,66 @@ if chart_select == "Home":
     st.markdown(
         "(Our open-source data taken from this link: https://www.kaggle.com/antgoldbloom/covid19-data-from-john-hopkins-university) ")
 
+
     dataset = st.beta_container()
     with dataset:
-        st.write("Dataset Sample")
+        st.write("Dataset sample")
 
         data = pd.read_csv("owid-covid-data.csv")
         st.write(data.head(10))
-    st.markdown(
-        "This is a snippet of the covid data over a range of locations, in an attempt to reduce redundancy, irrelevant variables have been eliminated")
+
+if chart_select == "Overview":
+    region = []
+    cases = []
+    time = []
+    latitude = []
+    longitude = []
+    fat = []
+    for u in list(raw_conf.columns)[4:]:
+        time.append([u for i in range(raw_conf.shape[0])])
+        region.append(list(raw_conf['Country']))
+        cases.append(list(raw_conf[u]))
+
+        latitude.append(list(raw_conf.Lat))
+        longitude.append(list(raw_conf.Long))
+        fat.append(list(raw_deaths[u]))
+    global_covid19 = pd.DataFrame()
+    global_covid19['date'] = np.concatenate(time)
+    global_covid19['country'] = np.concatenate(region)
+    global_covid19['Lat'] = np.concatenate(latitude)
+    global_covid19['Long'] = np.concatenate(longitude)
+    global_covid19['cases'] = np.concatenate(cases)
+    global_covid19['fatalities'] = np.concatenate(fat)
+
+    center_point = dict(lon=0, lat=0)
+    figx = px.density_mapbox(global_covid19, lat='Lat', lon='Long', z="cases",
+                             center=center_point, hover_name='country', zoom=5,
+                             range_color=[20, 20], radius=20,
+                             mapbox_style='open-street-map', title='Novel Covid19 cases in the world',
+                             animation_frame='date',
+                             width=1000)
+    figx.update(layout_coloraxis_showscale=True)
+    st.plotly_chart(figx)
+
+    st.markdown("# Number of Confirmed Cases")
+    fig = px.line(third_csv, x="Date", y="Count", color="Country",
+                  title='Transition in the number of confirmed cases of each countries',
+                  template="simple_white", width=1000)
+    fig.update_layout(showlegend=False)
+    st.plotly_chart(fig)
+
+    st.markdown("# Number of Confirmed Cases in Selected Countries")
+    selected_countries = ["US", "India", "Spain", "Iran", "United Kingdom", "Turkey"]
+    df_global_confirmed_cases_selected = third_csv[third_csv["Country"].isin(selected_countries)].reset_index(drop=True)
+
+    fig = px.line(df_global_confirmed_cases_selected, x="Date", y="Count", color="Country",
+                  title='Transition in the number of confirmed cases of each countries',
+                  template="simple_white", width=1000)
+    fig.update_layout(showlegend=False)
+    st.plotly_chart(fig)
+
+    with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
+        countries = json.load(response)
 
 if chart_select == "Country Based":
 
@@ -76,41 +133,37 @@ if chart_select == "Country Based":
         subset_data = subset_data.sort_values(by="date")  # sorting values based on the date
         subset_data = subset_data[(subset_data["date"] > str(start_date)) & (
                     subset_data["date"] < str(end_date))]  # filtering data based on the selected period
-        variable = st.selectbox("cases | deaths", ["cases", "deaths"])
+
+        st.subheader('Comparision of the total deaths caused by COVID-19')
+        total_deaths_graph = px.line(df, x='date',
+                                     y='total_deaths',
+                                     width=1000,
+                                     color='Countries')  # plotly graph
 
 
-        def draw_plots(variable):
-            st.subheader(f'Comparision of the total {variable} caused by COVID-19')
-            total_graph = px.line(x=subset_data["date"],
-                                  y=subset_data[f"total_{variable}"],
-                                  width=1000,
-                                  color=subset_data["location"],
-                                  )  # plotly graph
-            total_graph.update_layout(title=f'Comparision of the total {variable} caused by COVID-19',
-                                      xaxis=dict(title='Date'),
-                                      yaxis=dict(title=f'total {variable}'),
-                                      legend_title=dict(text='<b>Countries</b>')
-                                      )
-            st.plotly_chart(total_graph)  # showing plotly graph
-
-            st.subheader(f'Comparision of the total {variable} per million caused by COVID-19')
-            total_per_million_graph = px.line(x=subset_data["date"],
-                                              y=subset_data[f"total_{variable}_per_million"],
-                                              width=1000,
-                                              color=subset_data["location"],
-                                              )  # plotly graph
-            total_per_million_graph.update_layout(title=f'Comparision of the total {variable} caused by COVID-19',
-                                                  xaxis=dict(title='Date'),
-                                                  yaxis=dict(title=f'total {variable} per million'),
-                                                  legend_title=dict(text='<b>Countries</b>')
-                                                  )
-            st.plotly_chart(total_per_million_graph)
+        st.plotly_chart(total_deaths_graph)  # showing plotly graph
 
 
-        draw_plots(variable=variable)  # showing plotly graph
+
+        st.subheader('Comparision of the total deaths per million caused by COVID-19')
+
+        total_deaths_per_million_graph = px.line(df, x='date',
+                                     y='total_deaths_per_million',
+                                     width=1000,
+                                     color='Countries')  # plotly graph
+        st.plotly_chart(total_deaths_per_million_graph)  # showing plotly graph
 
 if chart_select == "USA":
-    st.markdown("# Please hold on for loading the page!")
+    def convert_date(date_str):
+        return dt.strptime(date_str, '%m/%d/%y')
+
+
+    third_csv["Date"] = third_csv["Date"].map(convert_date)
+
+    country_cols = [col for col in third_csv.columns if col not in ["Date"]]
+    third_csv = pd.melt(third_csv, id_vars=['Date'], value_vars=country_cols,
+                        var_name='Country', value_name='Count')
+
     cases = pd.read_csv("CONVENIENT_us_confirmed_cases.csv"
                         , index_col=False
                         , header=None
@@ -128,6 +181,7 @@ if chart_select == "USA":
     # chaning column names to the first row values
     deaths.columns = deaths.iloc[0]
     deaths = deaths.iloc[1:, 0:]
+
     cases_md = pd.read_csv("CONVENIENT_us_metadata.csv")
 
     # fips data to get the FIPS id
@@ -152,20 +206,14 @@ if chart_select == "USA":
 
     # changing FIPS column from float to string and appending leading zeros to be in compliance with the FIPS format
     fd.FIPS = fd.FIPS.astype(int).astype(str).str.zfill(5)
-
-    from urllib.request import urlopen
-    import json
-
-    with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
-        counties = json.load(response)
-
-    fig = px.choropleth_mapbox(fd, geojson=counties, locations='FIPS id', color='Total_cases',
+    st.markdown("# Covid Across USA")
+    fig = px.choropleth_mapbox(fd, geojson=countries, locations='FIPS', color='Total_cases',
                                color_continuous_scale="earth",  # "Viridis",
                                range_color=(0, 4000),
                                mapbox_style="carto-darkmatter",  # "carto-positron","open-street-map",
                                zoom=3, center={"lat": 37.0902, "lon": -95.7129},
                                opacity=0.5,
-                               hover_data=["Province_State"],
+                               hover_data=["Province_State", "Admin2"],
                                template='plotly_dark',
                                # title = 'COVID - 19 Cases Across USA - County View',
                                labels={'Total_cases': 'COVID Cases'},
@@ -173,5 +221,4 @@ if chart_select == "USA":
                                )
 
     fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
-
     st.plotly_chart(fig)
