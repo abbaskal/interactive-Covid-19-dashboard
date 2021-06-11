@@ -11,7 +11,7 @@ from urllib.request import urlopen
 import json
 from warnings import filterwarnings
 
-st.set_page_config(layout="wide", page_title= 'Covid Dashboards', page_icon="download.png" )
+st.set_page_config(layout="wide", page_title='Covid Dashboards', page_icon="download.png")
 
 filterwarnings('ignore')
 plt.style.use('seaborn')
@@ -44,14 +44,14 @@ if chart_select == "Home":
     st.markdown(
         "(Our open-source data taken from this link: https://www.kaggle.com/antgoldbloom/covid19-data-from-john-hopkins-university) ")
 
-
     dataset = st.beta_container()
     with dataset:
         st.write("Dataset Sample")
 
         data = pd.read_csv("owid-covid-data.csv")
         st.write(data.head(10))
-    st.markdown("This is a snippet of the covid data over a range of locations, in an attempt to reduce redundancy, irrelevant variables have been eliminated")
+    st.markdown(
+        "This is a snippet of the covid data over a range of locations, in an attempt to reduce redundancy, irrelevant variables have been eliminated")
 
 if chart_select == "Country Based":
 
@@ -72,104 +72,106 @@ if chart_select == "Country Based":
                              max_value=dt.strptime("2021-06-08", "%Y-%m-%d"))  # choosing the end date
 
     if len(country_name_input) > 0:
+        subset_data = df[df['location'].isin(country_name_input)]  # getting the stats of the selected country/ies
+        subset_data = subset_data.sort_values(by="date")  # sorting values based on the date
+        subset_data = subset_data[(subset_data["date"] > str(start_date)) & (
+                    subset_data["date"] < str(end_date))]  # filtering data based on the selected period
+        variable = st.selectbox("cases | deaths", ["cases", "deaths"])
 
-        subset_data= df[df['location'].isin(country_name_input)] #getting the stats of the selected country/ies
-        subset_data= subset_data.sort_values(by="date") #sorting values based on the date
-        subset_data= subset_data[(subset_data["date"] > str(start_date)) & (subset_data["date"] < str(end_date))] #filtering data based on the selected period
-        variable= st.selectbox("cases | deaths", ["cases", "deaths"])
 
         def draw_plots(variable):
             st.subheader(f'Comparision of the total {variable} caused by COVID-19')
-            total_graph= px.line (x= subset_data["date"],
-                                y= subset_data[f"total_{variable}"], 
-                                width=1000,
-                                color=subset_data["location"],
-                                ) # plotly graph
+            total_graph = px.line(x=subset_data["date"],
+                                  y=subset_data[f"total_{variable}"],
+                                  width=1000,
+                                  color=subset_data["location"],
+                                  )  # plotly graph
             total_graph.update_layout(title=f'Comparision of the total {variable} caused by COVID-19',
-                            xaxis=dict(title='Date'),
-                            yaxis=dict(title=f'total {variable}'),
-                            legend_title=dict(text='<b>Countries</b>')
-                            )
-            st.plotly_chart(total_graph) #showing plotly graph
+                                      xaxis=dict(title='Date'),
+                                      yaxis=dict(title=f'total {variable}'),
+                                      legend_title=dict(text='<b>Countries</b>')
+                                      )
+            st.plotly_chart(total_graph)  # showing plotly graph
 
             st.subheader(f'Comparision of the total {variable} per million caused by COVID-19')
-            total_per_million_graph= px.line (x= subset_data["date"],
-                                y= subset_data[f"total_{variable}_per_million"], 
-                                width=1000,
-                                color=subset_data["location"],
-                                ) # plotly graph
+            total_per_million_graph = px.line(x=subset_data["date"],
+                                              y=subset_data[f"total_{variable}_per_million"],
+                                              width=1000,
+                                              color=subset_data["location"],
+                                              )  # plotly graph
             total_per_million_graph.update_layout(title=f'Comparision of the total {variable} caused by COVID-19',
-                                       xaxis=dict(title='Date'),
-                                       yaxis=dict(title=f'total {variable} per million'),
-                                       legend_title=dict(text='<b>Countries</b>')
-                                       )
+                                                  xaxis=dict(title='Date'),
+                                                  yaxis=dict(title=f'total {variable} per million'),
+                                                  legend_title=dict(text='<b>Countries</b>')
+                                                  )
             st.plotly_chart(total_per_million_graph)
 
-        draw_plots(variable=variable) #showing plotly graph
+
+        draw_plots(variable=variable)  # showing plotly graph
 
 if chart_select == "USA":
+    st.markdown("# Please hold on for loading the page!")
     cases = pd.read_csv("CONVENIENT_us_confirmed_cases.csv"
-                    ,index_col= False
-                    ,header = None
-                   ).transpose()
+                        , index_col=False
+                        , header=None
+                        ).transpose()
 
-    #adding column names to the cases data 
+    # adding column names to the cases data
     cases.columns = cases.iloc[0]
-    cases = cases.iloc[1:,0:]
-    #deaths 
+    cases = cases.iloc[1:, 0:]
+    # deaths
     deaths = pd.read_csv("CONVENIENT_us_deaths.csv"
-                        ,index_col= False
-                        ,header = None
-                    ).transpose()
+                         , index_col=False
+                         , header=None
+                         ).transpose()
 
-    #chaning column names to the first row values 
+    # chaning column names to the first row values
     deaths.columns = deaths.iloc[0]
-    deaths = deaths.iloc[1:,0:]
+    deaths = deaths.iloc[1:, 0:]
     cases_md = pd.read_csv("CONVENIENT_us_metadata.csv")
 
-    #fips data to get the FIPS id 
-    fips = pd.read_csv("RAW_us_confirmed_cases.csv").iloc[:,0:7]
+    # fips data to get the FIPS id
+    fips = pd.read_csv("RAW_us_confirmed_cases.csv").iloc[:, 0:7]
 
-    #filling null with 0s 
-    fips.FIPS = fips.FIPS.fillna(0) #replacing NA values with 0
+    # filling null with 0s
+    fips.FIPS = fips.FIPS.fillna(0)  # replacing NA values with 0
 
-    # appending metadata to original data 
-    merged_data = pd.merge(cases_md, cases, on = ('Province_State','Admin2'), how = 'left')
+    # appending metadata to original data
+    merged_data = pd.merge(cases_md, cases, on=('Province_State', 'Admin2'), how='left')
 
-    #appending FIPS data to the metadata + original data - FIPS id needs to be used in the mapping 
-    merged_data = pd.merge(fips,merged_data, on = ('Province_State','Admin2'),how = 'left')
+    # appending FIPS data to the metadata + original data - FIPS id needs to be used in the mapping
+    merged_data = pd.merge(fips, merged_data, on=('Province_State', 'Admin2'), how='left')
 
     fd = pd.concat(
-                 [ merged_data[['Province_State','Admin2','Population','FIPS','Lat','Long']]
-                  ,merged_data.iloc[:,10:].astype(float).sum(axis = 1)] #this code gives the sum     
-                  ,axis = 1)
+        [merged_data[['Province_State', 'Admin2', 'Population', 'FIPS', 'Lat', 'Long']]
+            , merged_data.iloc[:, 10:].astype(float).sum(axis=1)]  # this code gives the sum
+        , axis=1)
 
-    #chaning the column name from 0 to Total cases 
-    fd =  fd.rename(columns = {0:'Total_cases'})
+    # chaning the column name from 0 to Total cases
+    fd = fd.rename(columns={0: 'Total_cases'})
 
-    # changing FIPS column from float to string and appending leading zeros to be in compliance with the FIPS format 
-    fd.FIPS = fd.FIPS.astype(int).astype(str).str.zfill(5) 
-    
+    # changing FIPS column from float to string and appending leading zeros to be in compliance with the FIPS format
+    fd.FIPS = fd.FIPS.astype(int).astype(str).str.zfill(5)
+
     from urllib.request import urlopen
     import json
 
     with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
         counties = json.load(response)
 
+    fig = px.choropleth_mapbox(fd, geojson=counties, locations='FIPS id', color='Total_cases',
+                               color_continuous_scale="earth",  # "Viridis",
+                               range_color=(0, 4000),
+                               mapbox_style="carto-darkmatter",  # "carto-positron","open-street-map",
+                               zoom=3, center={"lat": 37.0902, "lon": -95.7129},
+                               opacity=0.5,
+                               hover_data=["Province_State"],
+                               template='plotly_dark',
+                               # title = 'COVID - 19 Cases Across USA - County View',
+                               labels={'Total_cases': 'COVID Cases'},
+                               width=1000
+                               )
 
-    fig = px.choropleth_mapbox(fd,geojson=counties , locations = 'FIPS', color='Total_cases',
-                            color_continuous_scale= "earth", #"Viridis",
-                            range_color=(0,4000),
-                            mapbox_style= "carto-darkmatter", #"carto-positron","open-street-map",
-                            zoom=3, center = {"lat": 37.0902, "lon": -95.7129},
-                            opacity=0.5,
-                            hover_data=["Province_State", "Admin2"],
-                            template = 'plotly_dark',
-                            #title = 'COVID - 19 Cases Across USA - County View',
-                            labels={'Total_cases': 'COVID Cases'},
-                            width= 1000
-                            )
-
-    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
+    fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
 
     st.plotly_chart(fig)
