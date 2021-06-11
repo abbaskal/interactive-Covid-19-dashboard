@@ -14,7 +14,7 @@ from warnings import filterwarnings
 filterwarnings('ignore')
 plt.style.use('seaborn')
 
-
+st.set_page_config(page_title= 'Covid Dashboard', page_icon="download.png" )
 
 st.sidebar.image('look.jpg')
 st.sidebar.title("Visualization Selector")
