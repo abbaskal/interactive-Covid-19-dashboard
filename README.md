@@ -38,7 +38,6 @@ The covid dataset has the following fields:
 #### 1. cloning the repo
 
 ```bash
-# clone the repository
 
 git clone https://github.com/Abbas-Kalantari/interactive-Covid-19-dashboard
 
@@ -46,23 +45,20 @@ git clone https://github.com/Abbas-Kalantari/interactive-Covid-19-dashboard
 #### 2. go to the folder
 
 ```bash
-# clone the repository
 
 cd interactive-Covid-19-dashboard
 
 ```
-#### 3. cloning the repo
+#### 3. installing requirements
 
 ```bash
-# clone the repository
 
 pip install requirements.txt
 
 ```
-#### 4. cloning the repo
+#### 4. Enjoy :)
 
 ```bash
-# clone the repository
 
 streamlit run covid_app.py
 
