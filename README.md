@@ -21,6 +21,7 @@ https://thawing-anchorage-53534.herokuapp.com/
 ## Key to Dataset 
 
 The covid dataset has the following fields:
+US Dataset
 
  | Variable  | Definition  |
  | ---  | ---  |
@@ -30,8 +31,12 @@ The covid dataset has the following fields:
  | Lat | Latitude point |
  | Long | Longitude point |
  | Type | The type of case (i.e., confirmed, death) |
- | Cases | The number of daily cases (corresponding to the case type) |
-
+ | Cases | The number of daily cases (corresponding to the case type) | 
+ | Continent | continent where cases occur |
+ | New cases | Number of new cases |
+ | Fatalities | Risk of death |
+ | Total Deaths |Cumulative number of deaths  |
+ | Total Cases | The cumulative number of cases |
 
 ## Dependencies
 **All the requirements needed for this projects is stored in the [requirement.txt](https://github.com/Abbas-Kalantari/interactive-Covid-19-dashboard/blob/master/requirements.txt) file.**
@@ -66,11 +71,6 @@ pip install requirements.txt
 streamlit run covid_app.py
 
 ```
-## Author Names
-
-Joelma <joelma.kine@cri-paris.org>,
-Zeynep Ruveyda <ozelz3805@gmail.com>,
-Abbas Kalantari <abbaskalantari73@gmail.com>
 
 ## Dashboard
 
