@@ -14,7 +14,7 @@ filterwarnings('ignore')
 plt.style.use('seaborn')
 
 st.sidebar.image('look.jpg')
-st.sidebar.title("Vizualization Selector")
+st.sidebar.title("Visualization Selector")
 st.sidebar.write("Feel free to play graphs!")
 chart_select= st.sidebar.radio("Navigation Panel", (["Home", "Country Based", "Overview", "USA"]))
 
