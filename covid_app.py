@@ -111,6 +111,7 @@ if chart_select == "Country Based":
         
 st.cache(persist=True)
 if chart_select == "USA":
+    st.markdown("# Explore the US COVID data on the map")
     cases = pd.read_csv("CONVENIENT_us_confirmed_cases.csv"
                     ,index_col= False
                     ,header = None
