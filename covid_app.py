@@ -14,10 +14,7 @@ from warnings import filterwarnings
 filterwarnings('ignore')
 plt.style.use('seaborn')
 
-
-st.set_page_config(layout="wide", page_title= 'Covid Dashboards', page_icon="download.png" )
-padding = 10
-
+padding = 30
 st.markdown(f""" <style>
     .reportview-container .main .block-container{{
         padding-top: {padding}rem;
