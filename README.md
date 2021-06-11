@@ -66,7 +66,7 @@ pip install requirements.txt
 streamlit run covid_app.py
 
 ```
-#### Author Names
+## Author Names
 
 Joelma <joelma.kine@cri-paris.org>,
 Zeynep Ruveyda <ozelz3805@gmail.com>,
