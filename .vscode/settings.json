@@ -12,4 +12,4 @@
     ],
 
     "git.ignoreLimitWarning": true,
-    "python.pythonPath": "C:\\Users\\miss_\\AppData\\Local\\Programs\\Python\\Python39"}
+    "python.pythonPath": "covidvenv/bin/python"}
