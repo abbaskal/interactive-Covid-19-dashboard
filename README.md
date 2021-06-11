@@ -68,8 +68,8 @@ streamlit run covid_app.py
 ```
 #### Author Names
 
-Joelma <joelma.kine@cri-paris.org>
-Zeynep Ruveyda <ozelz3805@gmail.com>
+Joelma <joelma.kine@cri-paris.org>,
+Zeynep Ruveyda <ozelz3805@gmail.com>,
 Abbas Kalantari <abbaskalantari73@gmail.com>
 
 ## Dashboard
