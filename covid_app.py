@@ -80,7 +80,7 @@ if chart_select == "Country Based":
 
 
         def draw_plots(variable):
-            st.subheader(f'Comparision of the total {variable} caused by COVID-19')
+            st.markdown(f'<h2 style="text-align: center;"> Analyzing and Comparing of the total {variable} caused by COVID-19 </h2>', unsafe_allow_html=True)
             total_graph = px.line(x=subset_data["date"],
                                   y=subset_data[f"total_{variable}"],
                                   width=1000,
@@ -93,13 +93,12 @@ if chart_select == "Country Based":
                                       )
             st.plotly_chart(total_graph)  # showing plotly graph
 
-            st.subheader(f'Comparision of the total {variable} per million caused by COVID-19')
             total_per_million_graph = px.line(x=subset_data["date"],
                                               y=subset_data[f"total_{variable}_per_million"],
                                               width=1000,
                                               color=subset_data["location"],
                                               )  # plotly graph
-            total_per_million_graph.update_layout(title=f'Comparision of the total {variable} caused by COVID-19',
+            total_per_million_graph.update_layout(title=f'Comparision of the total {variable} per million caused by COVID-19',
                                                   xaxis=dict(title='Date'),
                                                   yaxis=dict(title=f'total {variable} per million'),
                                                   legend_title=dict(text='<b>Countries</b>')
@@ -112,6 +111,7 @@ if chart_select == "Country Based":
 st.cache(persist=True)
 if chart_select == "USA":
     st.markdown("# Explore the US COVID data on the map")
+    st.markdown("## sorry if you need to wait ... ")
     cases = pd.read_csv("CONVENIENT_us_confirmed_cases.csv"
                     ,index_col= False
                     ,header = None
