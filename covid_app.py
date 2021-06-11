@@ -1,13 +1,4 @@
 import streamlit as st
-padding = -10
-st.markdown(f""" <style>
-    .reportview-container .main .block-container{{
-        padding-top: {padding}rem;
-        padding-right: {padding}rem;
-        padding-left: {padding}rem;
-        padding-bottom: {padding}rem;
-    }} </style> """, unsafe_allow_html=True)
-
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -24,7 +15,14 @@ st.set_page_config(page_title= 'Covid Dashboard', page_icon="download.png" )
 filterwarnings('ignore')
 plt.style.use('seaborn')
 
-
+padding = -10
+st.markdown(f""" <style>
+    .reportview-container .main .block-container{{
+        padding-top: {padding}rem;
+        padding-right: {padding}rem;
+        padding-left: {padding}rem;
+        padding-bottom: {padding}rem;
+    }} </style> """, unsafe_allow_html=True)
 
 st.sidebar.image('look.jpg')
 st.sidebar.title("Visualization Selector")
