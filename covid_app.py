@@ -37,7 +37,7 @@ if chart_select == "Home":
 
     dataset = st.beta_container()
     with dataset:
-        st.write("Dataset sample")
+        st.write("Dataset Sample")
 
         data = pd.read_csv("owid-covid-data.csv")
         st.write(data.head(10))
