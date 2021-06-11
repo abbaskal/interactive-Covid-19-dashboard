@@ -21,7 +21,7 @@ https://thawing-anchorage-53534.herokuapp.com/
 ## Key to Dataset 
 
 The covid dataset has the following fields:
-US Dataset
+Main Variables in Both Datasets
 
  | Variable  | Definition  |
  | ---  | ---  |
