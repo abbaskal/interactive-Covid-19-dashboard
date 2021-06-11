@@ -129,6 +129,7 @@ if chart_select == "Country Based":
                                 y= subset_data[f"total_{variable}_per_million"], 
                                 width=1000,
                                 color=subset_data["location"],
+                                
                                 ) # plotly graph
             st.plotly_chart(total_per_million_graph)
 

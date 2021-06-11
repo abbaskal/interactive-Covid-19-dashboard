@@ -3,5 +3,10 @@
         "activityBar.background": "#451E46",
         "titleBar.activeBackground": "#612A62",
         "titleBar.activeForeground": "#FCF9FC"
-    }
+    },
+    "cSpell.ignoreWords": [
+        "title",
+        "xaxis",
+        "yaxis"
+    ]
 }
