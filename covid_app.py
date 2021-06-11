@@ -51,6 +51,7 @@ if chart_select == "Home":
 
         data = pd.read_csv("owid-covid-data.csv")
         st.write(data.head(10))
+    st.markdown("This is a snippet of the covid data over a range of locations, to attempt to reduce redundancy, irrelevant variables have been eliminated")
 
 if chart_select == "Overview":
     region = []
@@ -124,6 +125,21 @@ if chart_select == "Country Based":
                              max_value=dt.strptime("2021-06-08", "%Y-%m-%d"))  # choosing the end date
 
     if len(country_name_input) > 0:
+
+        subset_data = df[df['location'].isin(country_name_input)]  # getting the stats of the selected country/ies
+        subset_data = subset_data.sort_values(by="date")  # sorting values based on the date
+        subset_data = subset_data[(subset_data["date"] > str(start_date)) & (
+                    subset_data["date"] < str(end_date))]  # filtering data based on the selected period
+
+        st.subheader('Comparision of the total deaths caused by COVID-19')
+        total_deaths_graph = px.line(df, x='Date',
+                                     y='Total_Deaths',
+                                     width=1000,
+                                     color='Countries')  # plotly graph
+
+
+        st.plotly_chart(total_deaths_graph)  # showing plotly graph
+
 
         subset_data= df[df['location'].isin(country_name_input)] #getting the stats of the selected country/ies
         subset_data= subset_data.sort_values(by="date") #sorting values based on the date
