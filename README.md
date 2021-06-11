@@ -1,3 +1,4 @@
+## Software Heritage
 [![SWH](https://archive.softwareheritage.org/badge/swh:1:dir:a6c5dd6e0cb40fdb352b8f9da8e9ff47e7f31a0a/)](https://archive.softwareheritage.org/swh:1:dir:a6c5dd6e0cb40fdb352b8f9da8e9ff47e7f31a0a;origin=https://github.com/Abbas-Kalantari/interactive-Covid-19-dashboard;visit=swh:1:snp:bc4861bb86c333924c4d6e30dd96d6ce5e505d21;anchor=swh:1:rev:2b6eb24dc710b4d421502723a296fbe407b78e09)
 
 # INTERACTIVE COVID19 DASHBOARD
@@ -11,12 +12,12 @@ This project is performed by the CRI Digital Science Students at Paris/France. T
 
 The covid dataset has the following fields:
 
-Date: The date of the summary
-Province: The province or state, when applicable
-Country: The country or region name
-Lat: Latitude point
-Long: Longitude point
-Lype: The type of case (i.e., confirmed, death)
+Date: The date of the summary,
+Province: The province or state, when applicable,
+Country: The country or region name,
+Lat: Latitude point,
+Long: Longitude point,
+Lype: The type of case (i.e., confirmed, death),
 Cases: The number of daily cases (corresponding to the case type)
 
 ## Dependencies
