@@ -11,7 +11,7 @@ from urllib.request import urlopen
 import json
 from warnings import filterwarnings
 
-st.set_page_config(page_title= 'Covid Dashboards', page_icon="download.png" )
+st.set_page_config(layout="wide", page_title= 'Covid Dashboards', page_icon="download.png" )
 
 filterwarnings('ignore')
 plt.style.use('seaborn')
@@ -23,7 +23,7 @@ chart_select = st.sidebar.radio("Navigation Panel", (["Home", "Country Based", "
 
 if chart_select == "Home":
     ## HOMEPAGE
-    padding = -10
+    padding = 10
     st.markdown(f""" <style>
         .reportview-container .main .block-container{{
             padding-top: {padding}rem;
