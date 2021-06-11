@@ -132,8 +132,8 @@ if chart_select == "Country Based":
                     subset_data["date"] < str(end_date))]  # filtering data based on the selected period
 
         st.subheader('Comparision of the total deaths caused by COVID-19')
-        total_deaths_graph = px.line(df, x='date',
-                                     y='total_deaths',
+        total_deaths_graph = px.line(df, x='Date',
+                                     y='Total_Deaths',
                                      width=1000,
                                      color='Countries')  # plotly graph
 
