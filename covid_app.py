@@ -14,14 +14,7 @@ from warnings import filterwarnings
 filterwarnings('ignore')
 plt.style.use('seaborn')
 
-padding = 30
-st.markdown(f""" <style>
-    .reportview-container .main .block-container{{
-        padding-top: {padding}rem;
-        padding-right: {padding}rem;
-        padding-left: {padding}rem;
-        padding-bottom: {padding}rem;
-    }} </style> """, unsafe_allow_html=True)
+
 
 st.sidebar.image('look.jpg')
 st.sidebar.title("Visualization Selector")
@@ -29,6 +22,14 @@ st.sidebar.write("Feel free to play graphs!")
 chart_select = st.sidebar.radio("Navigation Panel", (["Home", "Country Based", "Overview", "USA"]))
 
 if chart_select == "Home":
+    padding = 30
+    st.markdown(f""" <style>
+        .reportview-container .main .block-container{{
+            padding-top: {padding}rem;
+            padding-right: {padding}rem;
+            padding-left: {padding}rem;
+            padding-bottom: {padding}rem;
+        }} </style> """, unsafe_allow_html=True)
     ## HOMEPAGE
     # setting title
     st.markdown("# Welcome! We are happy that you are using our interactive Covid-19 Dashboard ")
