@@ -122,19 +122,20 @@ if chart_select == "Country Based":
                                 width=1000,
                                 color=subset_data["location"],
                                 ) # plotly graph
-            st.plotly_chart(total_graph) #showing plotly graph
             total_graph.update_layout(title=f'Comparision of the total {variable} caused by COVID-19',
-                                       xaxis=dict(title='Date'),
-                                       yaxis=dict(title=f'total {variable}'),
-                                       legend_title=dict(text='<b>Countries</b>')
-                                       )
-            st.subheader(f'Comparision of the total {variable} per million infected by COVID-19')
+                            xaxis=dict(title='Date'),
+                            yaxis=dict(title=f'total {variable}'),
+                            legend_title=dict(text='<b>Countries</b>')
+                            )
+            st.plotly_chart(total_graph) #showing plotly graph
+
+            st.subheader(f'Comparision of the total {variable} per million caused by COVID-19')
             total_per_million_graph= px.line (x= subset_data["date"],
                                 y= subset_data[f"total_{variable}_per_million"], 
                                 width=1000,
                                 color=subset_data["location"],
                                 ) # plotly graph
-            total_per_million_graph.update_layout(title=f'Comparision of the total {variable} infected by COVID-19',
+            total_per_million_graph.update_layout(title=f'Comparision of the total {variable} caused by COVID-19',
                                        xaxis=dict(title='Date'),
                                        yaxis=dict(title=f'total {variable}'),
                                        legend_title=dict(text='<b>Countries</b>')
