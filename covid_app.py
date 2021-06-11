@@ -37,10 +37,11 @@ if chart_select == "Home":
 
     dataset = st.beta_container()
     with dataset:
-        st.write("Dataset sample")
+        st.write("Dataset Sample")
 
         data = pd.read_csv("owid-covid-data.csv")
         st.write(data.head(10))
+    st.markdown("This is a snippet of the covid data, note that irrelevant variables have been eliminated to avoid redundancy")
 
 if chart_select == "Overview":
     region = []
