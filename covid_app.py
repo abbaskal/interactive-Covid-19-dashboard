@@ -114,26 +114,30 @@ if chart_select == "Country Based":
                              max_value=dt.strptime("2021-06-08", "%Y-%m-%d"))  # choosing the end date
 
     if len(country_name_input) > 0:
-        subset_data = df[df['location'].isin(country_name_input)]  # getting the stats of the selected country/ies
-        subset_data = subset_data.sort_values(by="date")  # sorting values based on the date
-        subset_data = subset_data[(subset_data["date"] > str(start_date)) & (
-                    subset_data["date"] < str(end_date))]  # filtering data based on the selected period
 
-        st.subheader('Comparision of the total deaths caused by COVID-19')
-        total_deaths_graph = px.line(x=subset_data["date"],
-                                     y=subset_data["total_deaths"],
-                                     width=1000,
-                                     color=subset_data["location"],
-                                     )  # plotly graph
-        st.plotly_chart(total_deaths_graph)  # showing plotly graph
+        subset_data= df[df['location'].isin(country_name_input)] #getting the stats of the selected country/ies
+        subset_data= subset_data.sort_values(by="date") #sorting values based on the date
+        subset_data= subset_data[(subset_data["date"] > str(start_date)) & (subset_data["date"] < str(end_date))] #filtering data based on the selected period
+        variable= st.selectbox("cases | deaths", ["cases", "deaths"])
+        def draw_plots(variable):
+            st.subheader(f'Comparision of the total {variable} caused by COVID-19')
+            total_graph= px.line (x= subset_data["date"],
+                                y= subset_data[f"total_{variable}"], 
+                                width=1000,
+                                color=subset_data["location"],
+                                ) # plotly graph
+            st.plotly_chart(total_graph) #showing plotly graph
 
-        st.subheader('Comparision of the total deaths per million caused by COVID-19')
-        total_deaths_per_million_graph = px.line(x=subset_data["date"],
-                                                 y=subset_data["total_deaths_per_million"],
-                                                 width=1000,
-                                                 color=subset_data["location"],
-                                                 )  # plotly graph
-        st.plotly_chart(total_deaths_per_million_graph)  # showing plotly graph
+            st.subheader(f'Comparision of the total {variable} per million caused by COVID-19')
+            total_per_million_graph= px.line (x= subset_data["date"],
+                                y= subset_data[f"total_{variable}_per_million"], 
+                                width=1000,
+                                color=subset_data["location"],
+                                
+                                ) # plotly graph
+            st.plotly_chart(total_per_million_graph)#showing plotly graph
+
+        draw_plots(variable=variable)
 
 if chart_select == "USA":
     def convert_date(date_str):
