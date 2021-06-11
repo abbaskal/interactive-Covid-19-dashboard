@@ -20,7 +20,7 @@ st.sidebar.image('look.jpg')
 st.sidebar.title("Visualization Selector")
 st.sidebar.write("Feel free to play graphs!")
 chart_select = st.sidebar.radio("Navigation Panel", (["Home", "Country Based", "USA"]))
-
+st.cache(persist=True)
 if chart_select == "Home":
     ## HOMEPAGE
     padding = 10
@@ -52,7 +52,7 @@ if chart_select == "Home":
         st.write(data.head(10))
     st.markdown(
         "This is a snippet of the covid data over a range of locations, in an attempt to reduce redundancy, irrelevant variables have been eliminated")
-
+st.cache(persist=True)
 if chart_select == "Country Based":
 
     st.markdown("# Please choose the countries from the selector below")
@@ -108,50 +108,54 @@ if chart_select == "Country Based":
 
 
         draw_plots(variable=variable)  # showing plotly graph
-
+        
+st.cache(persist=True)
 if chart_select == "USA":
-    st.markdown("# Please hold on for loading the page!")
     cases = pd.read_csv("CONVENIENT_us_confirmed_cases.csv"
-                        , index_col=False
-                        , header=None
-                        ).transpose()
+                    ,index_col= False
+                    ,header = None
+                   ).transpose()
 
-    # adding column names to the cases data
+    #adding column names to the cases data 
     cases.columns = cases.iloc[0]
-    cases = cases.iloc[1:, 0:]
-    # deaths
-    deaths = pd.read_csv("CONVENIENT_us_deaths.csv"
-                         , index_col=False
-                         , header=None
-                         ).transpose()
+    cases = cases.iloc[1:,0:]
 
-    # chaning column names to the first row values
+    #deaths 
+    deaths = pd.read_csv("CONVENIENT_us_deaths.csv"
+                        ,index_col= False
+                        ,header = None
+                    ).transpose()
+
+    #chaning column names to the first row values 
     deaths.columns = deaths.iloc[0]
-    deaths = deaths.iloc[1:, 0:]
+    deaths = deaths.iloc[1:,0:]
+
     cases_md = pd.read_csv("CONVENIENT_us_metadata.csv")
 
-    # fips data to get the FIPS id
-    fips = pd.read_csv("RAW_us_confirmed_cases.csv").iloc[:, 0:7]
+    #fips data to get the FIPS id 
+    fips = pd.read_csv("RAW_us_confirmed_cases.csv").iloc[:,0:7]
 
-    # filling null with 0s
-    fips.FIPS = fips.FIPS.fillna(0)  # replacing NA values with 0
+    #filling null with 0s 
+    fips.FIPS = fips.FIPS.fillna(0) #replacing NA values with 0
 
-    # appending metadata to original data
-    merged_data = pd.merge(cases_md, cases, on=('Province_State', 'Admin2'), how='left')
 
-    # appending FIPS data to the metadata + original data - FIPS id needs to be used in the mapping
-    merged_data = pd.merge(fips, merged_data, on=('Province_State', 'Admin2'), how='left')
+    # appending metadata to original data 
+    merged_data = pd.merge(cases_md, cases, on = ('Province_State','Admin2'), how = 'left')
+
+    #appending FIPS data to the metadata + original data - FIPS id needs to be used in the mapping 
+    merged_data = pd.merge(fips,merged_data, on = ('Province_State','Admin2'),how = 'left')
 
     fd = pd.concat(
-        [merged_data[['Province_State', 'Admin2', 'Population', 'FIPS', 'Lat', 'Long']]
-            , merged_data.iloc[:, 10:].astype(float).sum(axis=1)]  # this code gives the sum
-        , axis=1)
+                    [ merged_data[['Province_State','Admin2','Population','FIPS','Lat','Long']]
+                    ,merged_data.iloc[:,10:].astype(float).sum(axis = 1)] #this code gives the sum     
+                    ,axis = 1)
 
-    # chaning the column name from 0 to Total cases
-    fd = fd.rename(columns={0: 'Total_cases'})
+    #chaning the column name from 0 to Total cases 
+    fd =  fd.rename(columns = {0:'Total_cases'})
 
-    # changing FIPS column from float to string and appending leading zeros to be in compliance with the FIPS format
-    fd.FIPS = fd.FIPS.astype(int).astype(str).str.zfill(5)
+    # changing FIPS column from float to string and appending leading zeros to be in compliance with the FIPS format 
+    fd.FIPS = fd.FIPS.astype(int).astype(str).str.zfill(5) 
+
 
     from urllib.request import urlopen
     import json
@@ -159,19 +163,20 @@ if chart_select == "USA":
     with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
         counties = json.load(response)
 
-    fig = px.choropleth_mapbox(fd, geojson=counties, locations='FIPS id', color='Total_cases',
-                               color_continuous_scale="earth",  # "Viridis",
-                               range_color=(0, 4000),
-                               mapbox_style="carto-darkmatter",  # "carto-positron","open-street-map",
-                               zoom=3, center={"lat": 37.0902, "lon": -95.7129},
-                               opacity=0.5,
-                               hover_data=["Province_State"],
-                               template='plotly_dark',
-                               # title = 'COVID - 19 Cases Across USA - County View',
-                               labels={'Total_cases': 'COVID Cases'},
-                               width=1000
-                               )
 
-    fig.update_layout(margin={"r": 0, "t": 0, "l": 0, "b": 0})
+    fig = px.choropleth_mapbox(fd,geojson=counties , locations = 'FIPS', color='Total_cases',
+                            color_continuous_scale= "earth", #"Viridis",
+                            range_color=(0,4000),
+                            mapbox_style= "carto-darkmatter", #"carto-positron","open-street-map",
+                            zoom=3, center = {"lat": 37.0902, "lon": -95.7129},
+                            opacity=0.5,
+                            hover_data=["Province_State", "Admin2"],
+                            template = 'plotly_dark',
+                            #title = 'COVID - 19 Cases Across USA - County View',
+                            labels={'Total_cases': 'COVID Cases'},
+                            width= 1000
+                            )
+
+    fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
 
     st.plotly_chart(fig)
