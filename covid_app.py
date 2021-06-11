@@ -14,7 +14,7 @@ from warnings import filterwarnings
 filterwarnings('ignore')
 plt.style.use('seaborn')
 
-padding = 3
+padding = 10
 st.markdown(f""" <style>
     .reportview-container .main .block-container{{
         padding-top: {padding}rem;
